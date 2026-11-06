@@ -1,0 +1,47 @@
+{
+  // Environnement identique pour tout le monde :
+  // - en ligne avec GitHub Codespaces (bouton "Open in Codespaces")
+  // - en local avec Docker + VS Code (extension "Dev Containers")
+  "name": "Atelier Agents IA (Google ADK)",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+
+  // Installe les dépendances (versions figées) à la création de l'environnement.
+  // La ligne gai.conf fait passer IPv4 avant IPv6 : dans certains Codespaces, IPv6 sort
+  // mal et les appels Python vers les API d'IA restent bloqués sans erreur.
+  "postCreateCommand": "grep -q '^precedence ::ffff:0:0/96' /etc/gai.conf 2>/dev/null || echo 'precedence ::ffff:0:0/96  100' | sudo tee -a /etc/gai.conf >/dev/null; git config core.hooksPath .githooks; git config core.fileMode false; chmod +x .githooks/pre-commit lancer.sh; pip install --upgrade pip && pip install -r requirements.txt; [ -f .env ] || cp .env.example .env",
+
+  // Message d'accueil à chaque ouverture
+  "postAttachCommand": "echo '\n👋 Bienvenue ! 1) Mettez votre clé dans le fichier .env  2) Lancez/écrivez la commande : bash lancer.sh\n'",
+
+  // Le port 8000 = l'interface "adk web"
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Interface ADK Web",
+      "onAutoForward": "openBrowser"
+    }
+  },
+
+  // Machine la plus petite = consomme le moins le quota gratuit Codespaces
+  "hostRequirements": {
+    "cpus": 2
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "mikestead.dotenv"
+      ],
+      "settings": {
+        "files.exclude": {
+          "**/__pycache__": true
+        }
+      }
+    },
+    "codespaces": {
+      "openFiles": ["README.md"]
+    }
+  }
+}
