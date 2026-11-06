@@ -14,20 +14,20 @@ Bienvenue ! En quelques heures, vous allez apprendre à créer **votre propre ag
 
 > 🔐 Cette clé est **personnelle**, comme un mot de passe. Ne la partagez pas et ne la publiez pas.
 
-### Étape 2 — Ouvrir votre environnement
+### Étape 2 - Ouvrir votre environnement
 
-**Option A — En ligne, rien à installer (recommandé)**
+**Option A - En ligne, rien à installer (recommandé)**
 1. Créez un compte gratuit sur **https://github.com** si vous n'en avez pas.
 2. Sur la page du dépôt, cliquez sur **Use this template puis Create a new repository** (vous obtiendrez votre propre copie).
 3. Dans votre copie : **Code - Codespaces - Create codespace on main**.
 4. Patientez 1 à 2 minutes : VS Code s'ouvre dans votre navigateur, tout est installé.
 
-**Option B — Sur votre ordinateur** - suivre `GUIDE_INSTALL_LOCAL.md`.
+**Option B - Sur votre ordinateur** - suivre `GUIDE_INSTALL_LOCAL.md`.
 
-### Étape 3 — Coller votre clé
+### Étape 3 - Coller votre clé
 Ouvrez le fichier **`.env`** (à gauche), remplace `collez_la_cle_ici` par votre clé, enregistrez (Ctrl+S / Cmd+S).
 
-### Étape 4 — Lancer l'interface
+### Étape 4 - Lancer l'interface
 Dans le terminal en bas, tapez :
 
 ```bash
