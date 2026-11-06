@@ -1,0 +1,45 @@
+# Modèle de configuration Caddy (rempli automatiquement par installer.sh)
+# Les marqueurs de domaine et de jeton ci-dessous sont remplacés à l'installation.
+# Fichier installé dans /etc/caddy/Caddyfile, droits 640 (root:caddy) car il contient le jeton.
+
+# Note : par défaut, Caddy masque l'en-tête Authorization dans ses journaux,
+# le jeton n'apparaît donc pas dans les logs. N'activez pas l'option "log_credentials".
+
+__DOMAINE__ {
+	# HTTPS automatique (Let's Encrypt), redirection HTTP vers HTTPS incluse
+
+	encode zstd gzip
+
+	request_body {
+		max_size 10MB
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	# Sonde de supervision publique (ne révèle rien)
+	handle /sante {
+		respond "ok" 200
+	}
+
+	handle {
+		# Toute requête sans le bon jeton est refusée AVANT d'atteindre les agents
+		@sans_jeton not header Authorization "Bearer __JETON__"
+		respond @sans_jeton "Non autorise" 401
+
+		reverse_proxy 127.0.0.1:8000
+	}
+
+	log {
+		output file /var/log/caddy/agents-ia.log {
+			roll_size 10MiB
+			roll_keep 10
+		}
+		format json
+	}
+}

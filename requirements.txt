@@ -1,0 +1,4 @@
+# Versions FIGÉES volontairement : les tutos ne cassent pas quand Google publie une mise à jour.
+# Pour monter de version : changer le numéro, relancer les 6 exercices, puis valider.
+google-adk==2.12.0
+litellm==1.106.2

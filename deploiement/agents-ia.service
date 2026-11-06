@@ -1,0 +1,56 @@
+[Unit]
+Description=Agents IA (serveur API Google ADK)
+Documentation=file:///opt/agents-ia/deploiement/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=agents
+Group=agents
+WorkingDirectory=/opt/agents-ia
+EnvironmentFile=/etc/agents-ia/agents.env
+
+# Écoute UNIQUEMENT en local : seul Caddy (HTTPS + jeton) est exposé sur Internet.
+ExecStart=/opt/agents-ia/venv/bin/adk api_server \
+    --host 127.0.0.1 \
+    --port 8000 \
+    --session_service_uri sqlite:////var/lib/agents-ia/sessions.db \
+    --artifact_service_uri file:///var/lib/agents-ia/artifacts \
+    --max_llm_calls ${MAX_APPELS_LLM} \
+    --log_level info \
+    /opt/agents-ia/agents
+
+Restart=on-failure
+RestartSec=5
+
+# ── Durcissement (moindre privilège) ──
+# Le code est en lecture seule, seules les données sont modifiables.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/agents-ia
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+CapabilityBoundingSet=
+AmbientCapabilities=
+UMask=0077
+
+# Limites de ressources (à ajuster selon la taille du VPS)
+MemoryMax=2G
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

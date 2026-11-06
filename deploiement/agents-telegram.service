@@ -1,0 +1,38 @@
+[Unit]
+Description=Agents IA : pont Telegram
+After=agents-ia.service network-online.target
+Requires=agents-ia.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=agents
+Group=agents
+WorkingDirectory=/opt/agents-ia
+EnvironmentFile=/etc/agents-ia/agents.env
+Environment=ADK_URL=http://127.0.0.1:8000
+ExecStart=/opt/agents-ia/venv/bin/python /opt/agents-ia/deploiement/telegram_pont.py
+Restart=on-failure
+RestartSec=10
+
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+CapabilityBoundingSet=
+UMask=0077
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target
