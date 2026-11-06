@@ -1,0 +1,28 @@
+#!/bin/sh
+# 🛡️ Garde-fou : empêche d'enregistrer (commit) une clé API ou le fichier .env.
+# Installé automatiquement dans Codespaces (voir .devcontainer/devcontainer.json).
+
+# 1) Le fichier .env ne doit jamais être suivi par Git
+if git diff --cached --name-only | grep -qE '(^|/)\.env$'; then
+  echo ""
+  echo "🛑 STOP : vous essayez d'enregistrer le fichier .env (il contient une clé)."
+  echo "   Retirez-le avec :  git restore --staged .env"
+  echo ""
+  exit 1
+fi
+
+# 2) Aucune clé API dans les lignes ajoutées, quel que soit le fichier
+#    AIza... = clé Google/Gemini · sk-or-... = OpenRouter · sk-... = OpenAI/Anthropic
+if git diff --cached -U0 | grep '^+' | grep -qE 'AIza[0-9A-Za-z_-]{35}|sk-or-v1-[0-9a-f]{20,}|sk-(proj-|ant-)?[A-Za-z0-9_-]{20,}'; then
+  echo ""
+  echo "🛑 STOP : une clé API a été détectée dans vos modifications !"
+  echo "   Fichiers concernés :"
+  git diff --cached -U0 | grep -E '^\+\+\+ |AIza|sk-' | grep -B1 -E 'AIza|sk-' | grep '^+++' | sed 's#^+++ b/#   - #'
+  echo ""
+  echo "   La clé ne doit être QUE dans le fichier .env (qui n'est jamais publié)."
+  echo "   Remettez 'coller_la_cle_ici' dans le fichier concerné, puis réessayez."
+  echo ""
+  exit 1
+fi
+
+exit 0
