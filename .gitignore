@@ -1,0 +1,8 @@
+# Secrets : ne JAMAIS publier de clé API
+.env
+
+# Fichiers techniques
+__pycache__/
+*.pyc
+.adk/
+.venv/
